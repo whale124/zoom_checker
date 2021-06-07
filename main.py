@@ -18,6 +18,7 @@ form_class = uic.loadUiType(form)[0]
 # Zoom 채팅 파일 이름
 zoom_path = os.path.expanduser('~') + "/Documents/Zoom/"
 zoom_chat_file_name = "/meeting_saved_chat.txt"
+list_dir_path = os.getcwd()+"/list/"
 
 # list 폴더 내 파일 이름
 list_name=[]
@@ -27,6 +28,11 @@ class WindowClass(QMainWindow, form_class):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+
+        # list 폴더가 없을 경우 생성
+        # Error 방지
+        if(os.path.isdir(list_dir_path)) != 1:
+            os.makedirs(list_dir_path)
 
         # data.txt 파일 불러오기
         self.data_file_load()
@@ -67,7 +73,7 @@ class WindowClass(QMainWindow, form_class):
         # 파일에서 목록 불러오기
         if self.RB_1.isChecked():
             if self.CB_1.currentText() != "":
-                filename = "./list/%s.txt" % (self.CB_1.currentText())
+                filename = "%s%s.txt" % (list_dir_path , self.CB_1.currentText())
                 #print(filename)
 
                 file = open(filename, 'r', encoding='utf-8')
@@ -89,7 +95,7 @@ class WindowClass(QMainWindow, form_class):
 
             # 명단 저장하기가 켜져 있으면
             if self.cb_save_list.isChecked():
-                filename = "./list/%d-%d.txt" % (data_grade , data_class)
+                filename = "%s%d-%d.txt" % (list_dir_path , data_grade , data_class)
                 file = open(filename,'w',encoding='utf-8')
 
             # data_cut = '%d%02d' % (data_grade,data_class)
@@ -205,12 +211,7 @@ class WindowClass(QMainWindow, form_class):
         self.CB_1.clear()
         #self.cb_num.setChecked(False)
 
-        # list 폴더가 없을 경우 생성
-        # Error 방지
-        if(os.path.isdir("./list")) != 1:
-            os.makedirs("./list")
-
-        file_list = os.listdir("./list")
+        file_list = os.listdir(list_dir_path)
 
         for num in file_list:
             if num[-3:] == "txt":
@@ -234,5 +235,5 @@ if __name__ == "__main__":
     myWindow.show()
     app.exec_()
 
-# ('checker.ui','.'),('view-refresh.svg','.'),('icon.png','.')
-# pyinstaller --onefile --windowed main.spec
+# ('checker.ui','.'),('./resource/view-refresh.svg','./resource/'),('./resource/icon.png','./resource/')
+# pyinstaller -F main.spec
