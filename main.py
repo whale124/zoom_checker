@@ -205,6 +205,11 @@ class WindowClass(QMainWindow, form_class):
         self.CB_1.clear()
         #self.cb_num.setChecked(False)
 
+        # list 폴더가 없을 경우 생성
+        # Error 방지
+        if(os.path.isdir("./list")) != 1:
+            os.makedirs("./list")
+
         file_list = os.listdir("./list")
 
         for num in file_list:
