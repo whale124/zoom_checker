@@ -19,6 +19,8 @@ form_class = uic.loadUiType(form)[0]
 zoom_path = os.path.expanduser('~') + "/Documents/Zoom/"
 zoom_chat_file_name = "/meeting_saved_chat.txt"
 
+# list 폴더 내 파일 이름
+list_name=[]
 
 # 화면을 띄우는데 사용되는 Class 선언
 class WindowClass(QMainWindow, form_class):
@@ -27,10 +29,10 @@ class WindowClass(QMainWindow, form_class):
         self.setupUi(self)
 
         # data.txt 파일 불러오기
-        self.data_load()
+        self.data_file_load()
 
         # 줌 채팅 목록 불러오기
-        self.chat_txt_select()
+        self.chat_list_load()
 
         # font load
         fontVar = QFont("Noto Sans KR")
@@ -42,12 +44,12 @@ class WindowClass(QMainWindow, form_class):
         self.bt_exit.clicked.connect(self.buttonF_exit)
 
         self.RB_1.clicked.connect(self.RadioButtonF_1)  # 파일에서 명단 목록
-        self.RB_2.clicked.connect(self.RadioButtonF_2)  # 명단 목록 생성
+        #self.RB_2.clicked.connect(self.RadioButtonF_2)  # 명단 목록 생성
 
         # 채팅 파일 다시 불러오기
-        self.bt_chat_reload.clicked.connect(self.chat_txt_load)
+        self.bt_chat_reload.clicked.connect(self.chat_list_reload)
 
-        # combo box changed
+        # 채팅 목록 선택이 변했을때
         self.chat_txt.currentIndexChanged.connect(self.chat_txt_load)
 
     # 체크 버튼 클릭
@@ -63,9 +65,11 @@ class WindowClass(QMainWindow, form_class):
         # C=[]     미출석 학생
 
         # 파일에서 목록 불러오기
-        if self.RB_1.isChecked() == 1:
+        if self.RB_1.isChecked():
             if self.CB_1.currentText() != "":
-                filename = self.CB_1.currentText()
+                filename = "./list/%s.txt" % (self.CB_1.currentText())
+                #print(filename)
+
                 file = open(filename, 'r', encoding='utf-8')
                 data = file.read().split()
 
@@ -75,36 +79,45 @@ class WindowClass(QMainWindow, form_class):
                 file.close()
 
             else:
-                self.te.append("Error!\nMake sure you have selected the correct item"
-                               "\n\n\n\n-------\n\nOnline Checker\n"
-                               "\nbuilt on 2021.06.04\n"
-                               "\nversion\nPython 3.8\nPyqt 5.15.4\n"
-                               "\nFonts - Noto Sans KR\n"
-                               "https://fonts.google.com/specimen/Noto+Sans+KR#standard-styles"
-                               "\n\nDeveloped by Lee for Sim\n"
-                               "\nBug report: hyeonje1147@naver.com")
+                self.te.append("Error!")
 
         # 목록 새로 만들기
-        elif self.RB_2.isChecked() == 1:
+        elif self.RB_2.isChecked():
             data_grade = self.sb_grade.value()
             data_class = self.sb_class.value()
             data_last = self.sb_last.value()
 
+            # 명단 저장하기가 켜져 있으면
+            if self.cb_save_list.isChecked():
+                filename = "./list/%d-%d.txt" % (data_grade , data_class)
+                file = open(filename,'w',encoding='utf-8')
+
             # data_cut = '%d%02d' % (data_grade,data_class)
             data_zero = '%d%02d00' % (data_grade, data_class)
 
+            # 명단 생성
             for num in range(1, data_last + 1):
                 num_st: int = int(data_zero) + num
                 B.append(str(num_st))
+
+                # 명단 저장
+                if self.cb_save_list.isChecked():
+                    file.write(str(num_st)+"\n")
+
+            if self.cb_save_list.isChecked():
+                file.close()
+
         else:
             self.te.append("Error!")
 
         # 자신의 학번
         A.append(self.le_usr_num.text())
 
+        # 입력한 값에서 학번만 추출
         for num in input_data:
             A.append(num[0:5])
 
+        # C=B-A
         set_C = set(B) - set(A)
         C = list(set_C)
 
@@ -114,13 +127,17 @@ class WindowClass(QMainWindow, form_class):
         self.lb_not.setText(str(len(C)) + "명")
         # print(str(len(complement_list))+"명\n")
         for num in C:
+            #번호만 보기 활성화시
             if self.cb_num.checkState() == 2:
                 num = num[3:5]
             # print(d)
             self.te.append(num)
 
     # 채팅 파일 선택
-    def chat_txt_select(self):
+    def chat_list_load(self):
+        list_name.clear()
+        list_name.append("")
+
         self.chat_txt.clear()
         self.chat_txt.addItem("INPUT")
 
@@ -130,48 +147,72 @@ class WindowClass(QMainWindow, form_class):
 
             for num in file_list:
                 self.chat_txt.addItem(num[5:-11])
+                list_name.append(num)
+                #self.chat_txt.addItem(num)
 
     # 채팅 파일 읽어오기
     def chat_txt_load(self):
-        if self.chat_txt.currentText() == "INPUT":
-            print("NONE")
-        else:
-            file_path = zoom_path + self.chat_txt.currentText() + zoom_chat_file_name
+        if self.chat_txt.currentText() != "INPUT":
+            # 삭제된 텍스트를 리스트로 복구.
+            file_path = zoom_path + list_name[self.chat_txt.currentIndex()] + zoom_chat_file_name
             if os.path.isfile(file_path):
                 file = open(file_path, 'r', encoding='utf-8')
                 self.te.setPlainText(file.read())
                 file.close()
 
-    # 데이터 로드
-    def data_load(self):
+    # 채팅 목록 다시 불러오기
+    def chat_list_reload(self):
+        # 현재 선택된 파일 이름 백업
+        back_txt_path = self.chat_txt.currentText()
 
+        # data 파일 및 채팅 목록 재 로딩
+        self.data_file_load()
+        self.chat_list_load()
+
+        if(self.chat_txt.findText(back_txt_path)):
+            self.chat_txt.setCurrentText(back_txt_path)
+            #print(self.chat_txt.currentText())
+        self.chat_txt_load()
+
+    # 데이터 로드
+    def data_file_load(self):
+        # 파일 유무를 확인 후 연다
         if os.path.isfile("data.txt") == 1:
             file = open("data.txt", 'r', encoding='utf-8')
             data_read = file.read().split()
 
+            # 학년, 반, 번호, 본인 학번
             self.sb_grade.setValue(int(data_read[0]))
             self.sb_class.setValue(int(data_read[1]))
             self.sb_last.setValue(int(data_read[2]))
             self.le_usr_num.setText(data_read[3])
+
+            # 번호만 표시/명단 저장
             self.cb_num.setChecked(int(data_read[4]))
+            self.cb_save_list.setChecked(int(data_read[6]))
+
+            # 명단 불러오기 토글
+            if int(data_read[5]):
+                self.RB_1.toggle()
+                self.RadioButtonF_1()
+            else:
+                self.RB_2.toggle()
 
             file.close()
 
     # 학번 데이터 불러오기
     def RadioButtonF_1(self):
         self.CB_1.clear()
-        self.cb_num.setChecked(False)
+        #self.cb_num.setChecked(False)
 
-        file_list = os.listdir()
+        file_list = os.listdir("./list")
 
         for num in file_list:
             if num[-3:] == "txt":
-                if num[0:2] == "F_":
-                    self.CB_1.addItem(num)
-                    # print(self.CB_1.currentText())
+                self.CB_1.addItem(num[:-4])
 
-    def RadioButtonF_2(self):
-        self.cb_num.setChecked(True)
+    #def RadioButtonF_2(self):
+    #    self.cb_num.setChecked(True)
 
     # 입력 테이블 지우는 함수
     def buttonF_delete(self):

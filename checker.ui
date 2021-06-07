@@ -153,7 +153,7 @@
    <widget class="QSpinBox" name="sb_grade">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>540</x>
       <y>310</y>
       <width>60</width>
       <height>33</height>
@@ -169,7 +169,7 @@
    <widget class="QSpinBox" name="sb_class">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>540</x>
       <y>350</y>
       <width>60</width>
       <height>33</height>
@@ -185,7 +185,7 @@
    <widget class="QLabel" name="label_grade">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>610</x>
       <y>310</y>
       <width>35</width>
       <height>29</height>
@@ -203,7 +203,7 @@
    <widget class="QLabel" name="label_class">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>610</x>
       <y>350</y>
       <width>18</width>
       <height>29</height>
@@ -221,7 +221,7 @@
    <widget class="QSpinBox" name="sb_last">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>540</x>
       <y>390</y>
       <width>60</width>
       <height>33</height>
@@ -240,7 +240,7 @@
    <widget class="QLabel" name="label_last">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>610</x>
       <y>390</y>
       <width>58</width>
       <height>29</height>
@@ -280,7 +280,7 @@
      </font>
     </property>
     <property name="text">
-     <string>자신 학번</string>
+     <string>본인 학번</string>
     </property>
    </widget>
    <widget class="QPushButton" name="bt_check">
@@ -319,7 +319,7 @@
     <property name="geometry">
      <rect>
       <x>510</x>
-      <y>98</y>
+      <y>128</y>
       <width>180</width>
       <height>32</height>
      </rect>
@@ -339,6 +339,9 @@
     </property>
     <property name="currentText">
      <string notr="true"/>
+    </property>
+    <property name="maxVisibleItems">
+     <number>10</number>
     </property>
    </widget>
    <widget class="QPushButton" name="bt_chat_reload">
