@@ -157,6 +157,7 @@ class WindowClass(QMainWindow, form_class):
             file_list.sort()
 
             for num in file_list:
+                # 채팅 파일 이름에서 년도와 코드를 제외하고 로딩
                 self.chat_txt.addItem(num[5:-11])
                 list_name.append(num)
                 #self.chat_txt.addItem(num)
