@@ -93,25 +93,29 @@ class WindowClass(QMainWindow, form_class):
             data_class = self.sb_class.value()
             data_last = self.sb_last.value()
 
+            # data_cut = '%d%02d' % (data_grade,data_class)
+            data_zero = '%d%02d00' % (data_grade, data_class)
+
             # 명단 저장하기가 켜져 있으면
             if self.cb_save_list.isChecked():
                 filename = "%s%d-%d.txt" % (list_dir_path , data_grade , data_class)
                 file = open(filename,'w',encoding='utf-8')
 
-            # data_cut = '%d%02d' % (data_grade,data_class)
-            data_zero = '%d%02d00' % (data_grade, data_class)
+                # 명단 생성
+                for num in range(1, data_last + 1):
+                    num_st: int = int(data_zero) + num
+                    B.append(str(num_st))
 
-            # 명단 생성
-            for num in range(1, data_last + 1):
-                num_st: int = int(data_zero) + num
-                B.append(str(num_st))
-
-                # 명단 저장
-                if self.cb_save_list.isChecked():
+                    # 명단 저장
                     file.write(str(num_st)+"\n")
-
-            if self.cb_save_list.isChecked():
                 file.close()
+
+            else:
+                # 명단 생성
+                for num in range(1, data_last + 1):
+                    num_st: int = int(data_zero) + num
+                    B.append(str(num_st))
+
 
         else:
             self.te.append("Error!")
@@ -139,7 +143,7 @@ class WindowClass(QMainWindow, form_class):
             # print(d)
             self.te.append(num)
 
-    # 채팅 파일 선택
+    # 채팅 파일 목록 불어오기
     def chat_list_load(self):
         list_name.clear()
         list_name.append("")
@@ -150,6 +154,7 @@ class WindowClass(QMainWindow, form_class):
         # Zoom 디렉터리 검사
         if os.path.isdir(zoom_path):
             file_list = os.listdir(zoom_path)
+            file_list.sort()
 
             for num in file_list:
                 self.chat_txt.addItem(num[5:-11])
@@ -159,8 +164,10 @@ class WindowClass(QMainWindow, form_class):
     # 채팅 파일 읽어오기
     def chat_txt_load(self):
         if self.chat_txt.currentText() != "INPUT":
+
             # 삭제된 텍스트를 리스트로 복구.
             file_path = zoom_path + list_name[self.chat_txt.currentIndex()] + zoom_chat_file_name
+
             if os.path.isfile(file_path):
                 file = open(file_path, 'r', encoding='utf-8')
                 self.te.setPlainText(file.read())
@@ -170,14 +177,20 @@ class WindowClass(QMainWindow, form_class):
     def chat_list_reload(self):
         # 현재 선택된 파일 이름 백업
         back_txt_path = self.chat_txt.currentText()
+        back_list_path = self.CB_1.currentText()
 
         # data 파일 및 채팅 목록 재 로딩
         self.data_file_load()
         self.chat_list_load()
 
+        # 백업한 항목이 있다면 불러오기
         if(self.chat_txt.findText(back_txt_path)):
             self.chat_txt.setCurrentText(back_txt_path)
             #print(self.chat_txt.currentText())
+        if(self.CB_1.findText(back_list_path)):
+            self.CB_1.setCurrentText(back_list_path)
+
+        # 채팅 파일 읽어오기
         self.chat_txt_load()
 
     # 데이터 로드
@@ -208,14 +221,22 @@ class WindowClass(QMainWindow, form_class):
 
     # 학번 데이터 불러오기
     def RadioButtonF_1(self):
+        # 기존 항목 백업
+        back_list_path = self.CB_1.currentText()
+        #print(back_list_path)
+
         self.CB_1.clear()
         #self.cb_num.setChecked(False)
 
         file_list = os.listdir(list_dir_path)
+        file_list.sort()
 
         for num in file_list:
             if num[-3:] == "txt":
                 self.CB_1.addItem(num[:-4])
+
+        if(self.CB_1.findText(back_list_path)):
+            self.CB_1.setCurrentText(back_list_path)
 
     #def RadioButtonF_2(self):
     #    self.cb_num.setChecked(True)
