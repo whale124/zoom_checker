@@ -266,5 +266,5 @@ if __name__ == "__main__":
     myWindow.show()
     app.exec_()
 
-# ('checker.ui','.'),('./resource/view-refresh.svg','./resource/'),('./resource/icon.png','./resource/')
+# ('checker.ui','.'),('./resource/view-refresh.svg','./resource/'),('./resource/Zoom.svg','./resource/')
 # pyinstaller -F main.spec
