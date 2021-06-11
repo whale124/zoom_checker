@@ -29,6 +29,9 @@ class WindowClass(QMainWindow, form_class):
         super().__init__()
         self.setupUi(self)
 
+        # 프로그램 버전 표시
+        self.lb_version.setText("1.0.5")
+
         # list 폴더가 없을 경우 생성
         # Error 방지
         if(os.path.isdir(list_dir_path)) != 1:
@@ -49,7 +52,8 @@ class WindowClass(QMainWindow, form_class):
         self.bt_delete.clicked.connect(self.buttonF_delete)
         self.bt_exit.clicked.connect(self.buttonF_exit)
 
-        self.RB_1.clicked.connect(self.RadioButtonF_1)  # 파일에서 명단 목록
+        # "./list"에서 명단 목록 불러오기
+        self.RB_1.clicked.connect(self.RB_student_list_load)  # 파일에서 명단 목록
         #self.RB_2.clicked.connect(self.RadioButtonF_2)  # 명단 목록 생성
 
         # 채팅 파일 다시 불러오기
@@ -134,16 +138,16 @@ class WindowClass(QMainWindow, form_class):
         # 자료 올림차순 정리
         C.sort()
 
-        self.lb_not.setText(str(len(C)) + "명")
+        self.lb_not.setText(str(len(C)) + " 명")
         # print(str(len(complement_list))+"명\n")
         for num in C:
-            #번호만 보기 활성화시
+            # 번호만 보기 활성화시
             if self.cb_num.checkState() == 2:
                 num = num[3:5]
             # print(d)
             self.te.append(num)
 
-    # 채팅 파일 목록 불어오기
+    # 채팅 파일 목록 불러오기
     def chat_list_load(self):
         list_name.clear()
         list_name.append("")
@@ -198,30 +202,35 @@ class WindowClass(QMainWindow, form_class):
     def data_file_load(self):
         # 파일 유무를 확인 후 연다
         if os.path.isfile("data.txt") == 1:
-            file = open("data.txt", 'r', encoding='utf-8')
-            data_read = file.read().split()
+            try:
+                file = open("data.txt", 'r', encoding='utf-8')
+                data_read = file.read().split()
 
-            # 학년, 반, 번호, 본인 학번
-            self.sb_grade.setValue(int(data_read[0]))
-            self.sb_class.setValue(int(data_read[1]))
-            self.sb_last.setValue(int(data_read[2]))
-            self.le_usr_num.setText(data_read[3])
+                # 학년, 반, 번호, 본인 학번
+                self.sb_grade.setValue(int(data_read[0]))
+                self.sb_class.setValue(int(data_read[1]))
+                self.sb_last.setValue(int(data_read[2]))
+                self.le_usr_num.setText(data_read[3])
 
-            # 번호만 표시/명단 저장
-            self.cb_num.setChecked(int(data_read[4]))
-            self.cb_save_list.setChecked(int(data_read[6]))
+                # 번호만 표시/명단 저장
+                self.cb_num.setChecked(int(data_read[4]))
+                self.cb_save_list.setChecked(int(data_read[6]))
 
-            # 명단 불러오기 토글
-            if int(data_read[5]):
-                self.RB_1.toggle()
-                self.RadioButtonF_1()
-            else:
-                self.RB_2.toggle()
+                # 명단 불러오기 토글
+                if int(data_read[5]):
+                    self.RB_1.toggle()
+                    self.RB_student_list_load()
+                else:
+                    self.RB_2.toggle()
 
-            file.close()
+                file.close()
+
+            except ValueError:
+                # 오류 발생시 표시
+                self.te.setPlainText('Error!\nCheck your "data.txt" file')
 
     # 학번 데이터 불러오기
-    def RadioButtonF_1(self):
+    def RB_student_list_load(self):
         # 기존 항목 백업
         back_list_path = self.CB_1.currentText()
         #print(back_list_path)
