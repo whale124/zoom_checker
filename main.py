@@ -1,4 +1,6 @@
 import sys, os, os.path
+#from typing import Set
+
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5 import uic
@@ -21,7 +23,7 @@ zoom_chat_file_name = "/meeting_saved_chat.txt"
 list_dir_path = os.getcwd()+"/list/"
 
 # list 폴더 내 파일 이름
-list_name=[]
+list_name = []
 
 # 화면을 띄우는데 사용되는 Class 선언
 class WindowClass(QMainWindow, form_class):
@@ -44,8 +46,8 @@ class WindowClass(QMainWindow, form_class):
         self.chat_list_load()
 
         # font load
-        fontVar = QFont("Noto Sans KR")
-        self.te.setCurrentFont(fontVar)
+        font_var = QFont("Noto Sans KR")
+        self.te.setCurrentFont(font_var)
 
         # 버튼에 기능을 연결하는 코드
         self.bt_check.clicked.connect(self.buttonF_check)
