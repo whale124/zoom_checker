@@ -1,3 +1,3 @@
 # zoom_checker
 
-<img width="80%" src="https://user-images.githubusercontent.com/70513197/128732428-2a17f308-e6b3-44a5-95d5-dc85a1764a48.gif">
+<img width="80%" src="https://user-images.githubusercontent.com/70513197/128735993-c9cfff34-e46d-4d87-b2cf-e5ecf6cde00c.gif">
