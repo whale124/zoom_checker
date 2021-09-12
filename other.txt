@@ -1,0 +1,12 @@
+# pyqt5 nimf 한글입력 문제 발생시
+https://hamonikr.org/index.php?mid=Free_Board&document_srl=102064
+
+pyinstaller -F --workpath build/dist --distpath build/build main.py
+
+datas=[('./resource/checker.ui','./resource/'),('./resource/view-refresh.svg','./resource/'),('./resource/Zoom.svg','./resource/'),('./resource/libqt5im-nimf.so','./resource/'),('./resource/welcome.txt','./resource/')],
+
+consol False
+Name Zoom_checker
+
+pyinstaller -F --workpath build/dist --distpath build/build main.spec
+

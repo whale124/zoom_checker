@@ -1,0 +1,10 @@
+Zoom Checker v1.0.6
+
+Python 3.9
+PyQt5 5.15.4
+
+사용법 및 업데이트 안내는 아래 홈페이지에서 받으세요
+https://github.com/whale124/zoom_checker
+
+2021.09.06
+Developed by whale
