@@ -1,5 +1,7 @@
 
-
+note.txt
+list/
+.gitignore
 .idea/
 main.spec
 other.txt
